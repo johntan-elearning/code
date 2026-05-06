@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Vocational Snake and Ladders Board Game Suite — Mobile-first open educational resource for vocational training in Southeast Asia. By John Tan, developed for Friends International / Mith Samlanh, Phnom Penh, Cambodia.">
+<title>Vocational Boards — Mith Samlanh</title>
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700&family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{--teal:#1A6B72;--teal-dark:#0F4A50;--amber:#FFB800;--cream:#FDF8F0;--dark:#1A1A1A;--mid:#555;--white:#fff;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Sarabun',sans-serif;background:#0D2B2F;color:var(--dark);min-height:100vh;}
+  .hero{background:linear-gradient(135deg,#0F3A40,var(--teal),#1E8A94);padding:40px 20px 32px;text-align:center;border-bottom:3px solid var(--amber);}
+  .hero-label{font-family:'Kanit',sans-serif;font-size:11px;letter-spacing:3px;color:var(--amber);text-transform:uppercase;margin-bottom:8px;}
+  .hero-title{font-family:'Kanit',sans-serif;font-size:26px;font-weight:700;color:var(--white);line-height:1.2;margin-bottom:6px;}
+  .hero-sub{font-size:13px;color:rgba(255,255,255,0.75);margin-bottom:4px;}
+  .hero-khmer{font-size:15px;color:rgba(255,255,255,0.65);margin-bottom:16px;}
+  .hero-meta{font-size:11px;color:rgba(255,255,255,0.5);line-height:1.7;}
+  .hero-meta a{color:var(--amber);text-decoration:none;}
+  .licence-pill{display:inline-block;background:rgba(255,184,0,0.2);border:1px solid rgba(255,184,0,0.4);border-radius:20px;padding:4px 14px;font-size:11px;color:var(--amber);margin-top:10px;font-weight:600;}
+  .stats{display:flex;justify-content:center;gap:24px;padding:16px;background:rgba(0,0,0,0.3);flex-wrap:wrap;}
+  .stat{text-align:center;}
+  .stat-n{font-family:'Kanit',sans-serif;font-size:28px;font-weight:700;color:var(--amber);}
+  .stat-l{font-size:10px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;}
+  .pathway{margin:0 auto;max-width:500px;padding:16px 12px 8px;}
+  .pathway-title{font-family:'Kanit',sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);padding:20px 0 8px;border-top:1px solid rgba(255,255,255,0.08);margin-top:8px;}
+  .pathway-title:first-of-type{border-top:none;margin-top:0;}
+  .board-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:14px;text-decoration:none;transition:all 0.2s ease;}
+  .board-card:hover,.board-card:active{background:rgba(26,107,114,0.3);border-color:var(--teal);transform:translateY(-1px);}
+  .board-icon{font-size:26px;flex-shrink:0;}
+  .board-info{flex:1;}
+  .board-name{font-family:'Kanit',sans-serif;font-size:15px;font-weight:600;color:var(--white);line-height:1.2;}
+  .board-khmer{font-size:12px;color:rgba(255,255,255,0.5);margin-top:2px;}
+  .board-arrow{font-size:18px;color:rgba(255,255,255,0.3);}
+  .footer{padding:32px 20px;text-align:center;background:rgba(0,0,0,0.3);margin-top:16px;}
+  .footer-title{font-family:'Kanit',sans-serif;font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:8px;}
+  .citation{background:rgba(255,255,255,0.05);border-radius:10px;padding:14px;font-size:11px;color:rgba(255,255,255,0.5);line-height:1.8;text-align:left;max-width:480px;margin:0 auto 16px;font-family:monospace;}
+  .footer-links{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;}
+  .footer-link{font-size:11px;color:var(--amber);text-decoration:none;padding:4px 0;}
+  .oer-badge{display:inline-block;background:rgba(26,122,60,0.3);border:1px solid rgba(34,160,80,0.4);border-radius:8px;padding:6px 14px;font-size:11px;color:#7EE8A2;margin-bottom:12px;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-label">Open Educational Resource · OER</div>
+  <div class="hero-title">Vocational Snake and Ladders<br>Board Game Suite</div>
+  <div class="hero-sub">Friends International / Mith Samlanh · Phnom Penh, Cambodia</div>
+  <div class="hero-khmer">ល្បែងពស់និង사ប្លែងវិជ្ជាជីវៈ</div>
+  <div class="hero-meta">
+    Created by <strong style="color:rgba(255,255,255,0.9)">John Tan</strong> · Technical Practitioner and Mentor · TVET and Tourism Education<br>
+    Informed by the <a href="https://doi.org/10.5281/zenodo.19376122">E3R3 Professional Learning Framework</a>
+  </div>
+  <div class="licence-pill">CC BY 4.0 — Free to use, adapt, and share with attribution</div>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="stat-n">23</div><div class="stat-l">Boards</div></div>
+  <div class="stat"><div class="stat-n">552</div><div class="stat-l">Scenarios</div></div>
+  <div class="stat"><div class="stat-n">4</div><div class="stat-l">Pathways</div></div>
+  <div class="stat"><div class="stat-n">0</div><div class="stat-l">Cost</div></div>
+</div>
+
+<div class="pathway">
+
+  <div class="pathway-title">🍽️ F&B Service Pathway</div>
+  <a class="board-card" href="boards/fnb/board1-orientation.html">
+    <div class="board-icon">🏪</div>
+    <div class="board-info"><div class="board-name">Board 1 — Orientation and First Day</div><div class="board-khmer">ថ្ងៃដំបូងនៃការងារ</div></div>
+    <div class="board-arrow">›</div>
+  </a>
+  <a class="board-card" href="boards/fnb/board2-service-sequence.html">
+    <div class="board-icon">🍷</div>
+    <div class="board-info"><div class="board-name">Board 2 — Service Sequence and Standards</div><div class="board-khmer">លំដាប់សេវាកម្ម</div></div>
+    <div class="board-arrow">›</div>
+  </a>
+  <a class="board-card" href="boards/fnb/board3-customer-types.html">
+    <div class="board-icon">👥</div>
+    <div class="board-info"><div class="board-name">Board 3 — Customer Types and Difficult Situations</div><div class="board-khmer">ប្រភេទអតិថិជន</div></div>
+    <div class="board-arrow">›</div>
+  </a>
+  <a class="board-card" href="boards/fnb/board4-food-knowledge.html">
+    <div class="board-icon">🍜</div>
+    <div class="board-info"><div class="board-name">Board 4 — Food Knowledge and Menu Confidence</div><div class="board-khmer">ចំណេះដឹងម្ហូប</div></div>
+    <div class="board-arrow">›</div>
+  </a>
+  <a class="board-card" href="boards/fnb/board5-moving-up.html">
+    <div class="board-icon">🏆</div>
+    <div class="board-info"><div class="board-name">Board 5 — Moving Up: Team and Supervisory Readiness</div><div class="board-khmer">ការឡើងលំដាប់</div></div>
+    <div class="board-arrow">›</div>
+  </a>
+
+  <div class="pathway-title">🔪 Kitchen Pathway</div>
+  <a class="board-card" href="boards/kitchen/k1-safety.html">
+    <div class="board-icon">⚠️</div>
+    <div class="board-info"><div class="board-name">K1 — Kitchen Safety and Orientation</div><div class="board-khmer">សុវត្ថិភាពផ្ទះបាយ</div></div>
+    <div class="board-arrow">›</div>
+  </a>
+  <a class="board-card" href="boards/kitchen/k2-cambodian-cuisine.html">
+    <div class="board-icon">🌿</div>
+    <div class="board-info"><div class="board-name">K2 — Cambodian and SE Asian Cuisine</div><div class="board-khmer">ម្ហូបខ្មែរ</div></div>
+    <div class="board-arrow">›</div>
+  </a>
+  <a class="board-card" href="boards/kitchen/k3-western-cuisine.html">
+    <div class="board-icon">🍳</div>
+    <div class="board-info"><div class="board-name">K3 — Western Cuisine Fundamentals</div><div class="board-khmer">ម្ហូបលោកខាងលិច</div></div>
+    <div class="board-arrow">›</div>
+  </a>
+  <a class="board-card" href="boards/kitchen/k4-communication.html">
+    <div class="board-icon">📣</div>
+    <div class="board-info"><div class="board-name">K4 — Kitchen Communication and Team</div><div class="board-khmer">ការទំនាក់ទំនង</div></div>
+    <div class="board-arrow">›</div>
+  </a>
+  <a class="board-card" href="boards/kitchen/k5-food-safety.html">
+    <div class="board-icon">🛡️</div>
+    <div class="board-info"><div class="board-name">K5 — Food Safety and HACCP</div><div class="board-khmer">សុវត្ថិភាពម្ហូបអាហារ</div></div>
+    <div class="board-arrow">›</div>
+  </a>
+
+  <div class="pathway-title">🔧 Technical and Vocational Pathway</div>
+  <a class="board-card" href="boards/technical/t1-mechanic-safety.html">
+    <div class="board-icon">🏍️</div>
+    <div class="board-info"><div class="board-name">T1 — Motor Mechanics: Workshop Safety and Tools</div><div class="board-khmer">សុវត្ថិភាពជាង</div></div>
+    <div class="board-arrow">›</div>
+  </a>
+  <a class="board-card" href="boards/technical/t2-diagnosis.html">
+    <div class="board-icon">🔍</div>
+    <div class="board-info"><div class="board-name">T2 — Motor Mechanics: Diagnosis and Repair</div><div class="board-khmer">ការធ្វើរោគវិនិច្ឆ័យ</div></div>
+    <div class="board-arrow">›</div>
+  </a>
+  <a class="board-card" href="boards/technical/t3-welding.html">
+    <div class="board-icon">⚡</div>
+    <div class="board-info"><div class="board-name">T3 — Welding and Construction</div><div class="board-khmer">ការភ្ជាប់ដែក</div></div>
+    <div class="board-arrow">›</div>
+  </a>
+  <a class="board-card" href="boards/technical/t4-electricity.html">
+    <div class="board-icon">💡</div>
+    <div class="board-info"><div class="board-name">T4 — Electricity: Safety and Installation</div><div class="board-khmer">អគ្គិសនី</div></div>
+    <div class="board-arrow">›</div>
+  </a>
+  <a class="board-card" href="boards/technical/t5-tailoring.html">
+    <div class="board-icon">🧵</div>
+    <div class="board-info"><div class="board-name">T5 — Tailoring and Sewing</div><div class="board-khmer">縫縫ខោអាវវ៉ែនតា</div></div>
+    <div class="board-arrow">›</div>
+  </a>
+
+  <div class="pathway-title">💄 Personal Care and Beauty Pathway</div>
+  <a class="board-card" href="boards/personal-care/pc1-barbering-safety.html">
+    <div class="board-icon">✂️</div>
+    <div class="board-info"><div class="board-name">PC1 — Barbering: Safety, Tools and Client Care</div><div class="board-khmer">ជំនាញកាត់សក់</div></div>
+    <div class="board-arrow">›</div>
+  </a>
+  <a class="board-card" href="boards/personal-care/pc2-cutting.html">
+    <div class="board-icon">💈</div>
+    <div class="board-info"><div class="board-name">PC2 — Barbering: Cutting Techniques and Style</div><div class="board-khmer">បច្ចេកទេសកាត់សក់</div></div>
+    <div class="board-arrow">›</div>
+  </a>
+  <a class="board-card" href="boards/personal-care/pc3-skin.html">
+    <div class="board-icon">💄</div>
+    <div class="board-info"><div class="board-name">PC3 — Beauty: Skin, Products and Safety</div><div class="board-khmer">ស្បែក និងផលិតផល</div></div>
+    <div class="board-arrow">›</div>
+  </a>
+  <a class="board-card" href="boards/personal-care/pc4-chemical.html">
+    <div class="board-icon">🎨</div>
+    <div class="board-info"><div class="board-name">PC4 — Colour, Chemical Treatments and Care</div><div class="board-khmer">ពណ៌ និងការព្យាបាលគីមី</div></div>
+    <div class="board-arrow">›</div>
+  </a>
+  <a class="board-card" href="boards/personal-care/pc5-nails.html">
+    <div class="board-icon">💅</div>
+    <div class="board-info"><div class="board-name">PC5 — Nail Technology and Business Readiness</div><div class="board-khmer">បច្ចេកទេសក្រចក</div></div>
+    <div class="board-arrow">›</div>
+  </a>
+
+  <div class="pathway-title">🌱 Foundation Pathway</div>
+  <a class="board-card" href="boards/foundation/f1-life-skills.html">
+    <div class="board-icon">🌟</div>
+    <div class="board-info"><div class="board-name">F1 — Life Skills</div><div class="board-khmer">ជំនាញជីវិត</div></div>
+    <div class="board-arrow">›</div>
+  </a>
+  <a class="board-card" href="boards/foundation/f2-financial-literacy.html">
+    <div class="board-icon">💰</div>
+    <div class="board-info"><div class="board-name">F2 — Financial Literacy</div><div class="board-khmer">ចំណេះដឹងហិរញ្ញវត្ថុ</div></div>
+    <div class="board-arrow">›</div>
+  </a>
+  <a class="board-card" href="boards/foundation/f3-hygiene.html">
+    <div class="board-icon">🧼</div>
+    <div class="board-info"><div class="board-name">F3 — Hygiene and Personal Safety</div><div class="board-khmer">អនាម័យ</div></div>
+    <div class="board-arrow">›</div>
+  </a>
+
+</div>
+
+<div class="footer">
+  <div class="oer-badge">Open Educational Resource — CC BY 4.0</div>
+  <div class="footer-title">Citation</div>
+  <div class="citation">Tan, J. (2026). Vocational Snake and Ladders Board Game Suite
+[Open educational resource]. Developed for Friends
+International / Mith Samlanh, Phnom Penh, Cambodia.
+GitHub Pages. https://johntan-tvet.github.io/vocational-boards
+Licensed under CC BY 4.0.
+
+Informed by:
+Tan, J. (2025). E3R3 Professional Learning Framework
+[Working paper]. Zenodo.
+https://doi.org/10.5281/zenodo.19376122</div>
+  <div class="footer-links">
+    <a class="footer-link" href="https://doi.org/10.5281/zenodo.19376122">E3R3 Framework (Zenodo)</a>
+    <a class="footer-link" href="ATTRIBUTION.md">Attribution Guide</a>
+    <a class="footer-link" href="LICENSE">Licence</a>
+    <a class="footer-link" href="https://github.com/johntan-tvet/vocational-boards">GitHub Repository</a>
+  </div>
+  <div style="margin-top:16px;font-size:11px;color:rgba(255,255,255,0.3);line-height:1.7;">
+    Copyright © 2026 John Tan · Technical Practitioner and Mentor · TVET and Tourism Education<br>
+    Currently volunteering in Tongatapu, Tonga<br>
+    Built for students who deserve tools that were built for them.
+  </div>
+</div>
+
+<script>
+// Register service worker for offline capability
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/vocational-boards/sw.js')
+      .then(reg => console.log('Service worker registered — boards work offline'))
+      .catch(err => console.log('Service worker not registered:', err));
+  });
+}
+</script>
+</body>
+</html>
