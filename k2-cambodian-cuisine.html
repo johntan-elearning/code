@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Kitchen Board 2 — Cambodian and SE Asian Cuisine</title>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700&family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{--teal:#1A6B72;--teal-dark:#0F4A50;--amber:#C47F00;--amber-light:#FFB800;--green:#1A7A3C;--green-light:#22A050;--red:#8B1A1A;--red-light:#C02020;--orange:#C45000;--orange-light:#FF6B00;--purple:#6A1A6A;--purple-light:#9A3A9A;--cream:#FDF8F0;--dark:#1A1A1A;--mid:#555;--white:#FFFFFF;}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  body{font-family:'Sarabun',sans-serif;background:#0D1A0D;color:var(--dark);min-height:100vh;overflow-x:hidden;}
+  .header{background:linear-gradient(135deg,#0D1A0D 0%,#1A3A1A 50%,#2A5A2A 100%);padding:18px 16px 14px;text-align:center;border-bottom:3px solid var(--amber-light);}
+  .header-board-num{font-family:'Kanit',sans-serif;font-size:10px;font-weight:600;letter-spacing:2px;color:var(--amber-light);text-transform:uppercase;margin-bottom:4px;}
+  .header-title{font-family:'Kanit',sans-serif;font-size:21px;font-weight:700;color:var(--white);line-height:1.2;}
+  .header-khmer{font-size:13px;color:rgba(255,255,255,0.82);margin-top:4px;}
+  .header-sub{font-size:11px;color:rgba(255,255,255,0.65);margin-top:3px;font-style:italic;}
+  .pathway-pills{display:flex;justify-content:center;gap:6px;margin-top:8px;flex-wrap:wrap;}
+  .pill{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:600;}
+  .pill-done{background:rgba(255,107,0,0.3);color:var(--orange-light);border:1px solid rgba(255,107,0,0.4);}
+  .pill-now{background:rgba(255,184,0,0.3);color:var(--amber-light);border:1px solid rgba(255,184,0,0.5);}
+  .pill-next{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.15);}
+  .progress-bar-wrap{background:rgba(0,0,0,0.4);padding:10px 16px;display:flex;align-items:center;gap:10px;}
+  .progress-bar-bg{flex:1;height:8px;background:rgba(255,255,255,0.12);border-radius:4px;overflow:hidden;}
+  .progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--amber-light),var(--green-light));border-radius:4px;transition:width 0.5s ease;}
+  .progress-label{font-family:'Kanit',sans-serif;font-size:11px;color:rgba(255,255,255,0.75);white-space:nowrap;min-width:60px;text-align:right;}
+  .legend{display:flex;justify-content:center;gap:14px;padding:9px 16px 6px;background:rgba(0,0,0,0.3);flex-wrap:wrap;}
+  .legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,0.6);}
+  .legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+  .board-container{padding:12px 10px 8px;background:#0D1A0D;}
+  .board-label{font-family:'Kanit',sans-serif;font-size:10px;letter-spacing:1.5px;color:rgba(255,255,255,0.35);text-align:center;margin-bottom:8px;text-transform:uppercase;}
+  .board-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:3px;max-width:420px;margin:0 auto;}
+  .sq{aspect-ratio:1;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;transition:transform 0.15s ease;border:2px solid transparent;user-select:none;}
+  .sq:active{transform:scale(0.92);}
+  .sq.ladder-sq{background:#1A3A00;border-color:var(--amber-light);}
+  .sq.snake-sq{background:#4A1A1A;border-color:#C02020;}
+  .sq.move-sq{background:#0D200D;border-color:#2A4A2A;}
+  .sq.current{border-color:var(--amber-light)!important;box-shadow:0 0 0 3px rgba(255,184,0,0.5);transform:scale(1.08);z-index:2;}
+  .sq.completed{opacity:0.52;}.sq.locked{opacity:0.3;cursor:not-allowed;}
+  .sq-num{font-family:'Kanit',sans-serif;font-size:9px;font-weight:600;color:rgba(255,255,255,0.45);position:absolute;top:2px;left:4px;}
+  .sq-icon{font-size:20px;line-height:1;}
+  .sq-badge{position:absolute;bottom:2px;right:2px;font-size:8px;}
+  .sq.current .sq-icon{animation:bounce 0.8s infinite alternate;}
+  @keyframes bounce{from{transform:translateY(0);}to{transform:translateY(-3px);}}
+  .card-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:100;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.25s ease;}
+  .card-overlay.open{opacity:1;pointer-events:all;}
+  .card{background:var(--cream);width:100%;max-height:90vh;border-radius:24px 24px 0 0;overflow-y:auto;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);padding-bottom:env(safe-area-inset-bottom,20px);}
+  .card-overlay.open .card{transform:translateY(0);}
+  .card::-webkit-scrollbar{display:none;}.card{-ms-overflow-style:none;scrollbar-width:none;}
+  .card-handle{width:40px;height:4px;background:rgba(0,0,0,0.18);border-radius:2px;margin:12px auto 0;}
+  .card-header{padding:16px 20px 14px;border-bottom:2px solid rgba(0,0,0,0.07);}
+  .card-meta{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+  .card-meta.ladder{color:var(--amber);}.card-meta.snake{color:var(--red-light);}.card-meta.move{color:var(--green);}
+  .card-type-badge{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:700;}
+  .badge-ladder{background:#FFF3CC;color:var(--amber);}.badge-snake{background:#F5E0E0;color:var(--red-light);}.badge-move{background:#E0F5E8;color:var(--green);}
+  .card-title{font-family:'Kanit',sans-serif;font-size:20px;font-weight:700;color:var(--dark);line-height:1.25;margin-bottom:4px;}
+  .card-khmer{font-size:14px;color:var(--mid);margin-bottom:2px;}
+  .card-progress-note{font-size:11px;color:rgba(0,0,0,0.38);margin-top:4px;}
+  .card-body{padding:16px 20px;}
+  .situation-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:8px;}
+  .situation-text{font-family:'Kanit',sans-serif;font-size:17px;font-weight:600;color:var(--dark);line-height:1.4;margin-bottom:16px;background:rgba(26,122,60,0.07);padding:12px 14px;border-radius:10px;border-left:4px solid var(--green);}
+  .options-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:10px;}
+  .options{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+  .option-btn{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:12px;border:2px solid rgba(0,0,0,0.1);background:var(--white);cursor:pointer;text-align:left;transition:all 0.2s ease;font-family:'Sarabun',sans-serif;font-size:15px;color:var(--dark);width:100%;}
+  .option-btn:active{transform:scale(0.98);}
+  .option-btn.selected-correct{background:#E8F5EC;border-color:var(--green-light);color:var(--green);}
+  .option-btn.selected-wrong{background:#F5E8E8;border-color:var(--red-light);color:var(--red);}
+  .option-btn.reveal-correct{background:#E8F5EC;border-color:var(--green-light);color:var(--green);}
+  .option-letter{font-family:'Kanit',sans-serif;font-weight:700;font-size:15px;min-width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,0.07);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+  .option-text{flex:1;line-height:1.4;}
+  .consequence{border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:14px;line-height:1.5;display:none;}
+  .consequence.show{display:block;}
+  .consequence.good{background:#E8F5EC;border-left:4px solid var(--green-light);color:var(--green);}
+  .consequence.bad{background:#F5E8E8;border-left:4px solid var(--red-light);color:var(--red-light);}
+  .jump-notice{font-family:'Kanit',sans-serif;font-size:14px;font-weight:700;text-align:center;padding:10px;border-radius:10px;margin-bottom:14px;display:none;}
+  .jump-notice.show{display:block;}
+  .jump-notice.ladder{background:#FFF3CC;color:var(--amber);}
+  .jump-notice.snake{background:#EBC6C6;color:var(--red);}
+  .pro-tip{background:rgba(26,122,60,0.08);border-left:3px solid var(--green);border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:13px;color:#0A4A1A;line-height:1.5;display:none;}
+  .pro-tip.show{display:block;}
+  .pro-tip-label{font-weight:700;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--green);display:block;margin-bottom:3px;}
+  .action-btn{display:block;width:100%;padding:16px;border-radius:14px;border:none;font-family:'Kanit',sans-serif;font-size:17px;font-weight:700;cursor:pointer;transition:all 0.2s ease;text-align:center;}
+  .action-btn:active{transform:scale(0.97);}
+  .action-btn.primary{background:linear-gradient(135deg,var(--green),var(--green-light));color:var(--white);box-shadow:0 4px 16px rgba(26,122,60,0.4);}
+  .action-btn.success{background:linear-gradient(135deg,var(--amber),var(--amber-light));color:var(--dark);box-shadow:0 4px 16px rgba(196,127,0,0.4);}
+  .action-btn.danger{background:linear-gradient(135deg,var(--red),var(--red-light));color:var(--white);box-shadow:0 4px 16px rgba(139,26,26,0.4);}
+  .completion{position:fixed;inset:0;background:linear-gradient(135deg,#0D1A0D,#0A0A00);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center;opacity:0;pointer-events:none;transition:opacity 0.5s ease;}
+  .completion.show{opacity:1;pointer-events:all;}
+  .completion-icon{font-size:72px;margin-bottom:16px;}
+  .completion-title{font-family:'Kanit',sans-serif;font-size:28px;font-weight:700;color:var(--amber-light);margin-bottom:8px;}
+  .completion-sub{font-size:15px;color:rgba(255,255,255,0.75);margin-bottom:8px;line-height:1.5;}
+  .completion-khmer{font-size:16px;color:rgba(255,255,255,0.55);margin-bottom:28px;}
+  .completion-stats{display:flex;gap:16px;margin-bottom:28px;flex-wrap:wrap;justify-content:center;}
+  .stat-box{background:rgba(255,255,255,0.1);border-radius:14px;padding:14px 18px;text-align:center;}
+  .stat-num{font-family:'Kanit',sans-serif;font-size:26px;font-weight:700;color:var(--amber-light);}
+  .stat-label{font-size:11px;color:rgba(255,255,255,0.55);margin-top:2px;}
+  .next-board-box{background:rgba(26,122,60,0.2);border:1px solid rgba(26,122,60,0.4);border-radius:14px;padding:14px 20px;margin-bottom:24px;font-size:14px;color:rgba(255,255,255,0.8);text-align:center;line-height:1.6;}
+  .restart-btn{background:var(--amber-light);color:var(--dark);border:none;border-radius:14px;padding:16px 40px;font-family:'Kanit',sans-serif;font-size:17px;font-weight:700;cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-board-num">🍜 Kitchen Pathway · Board 2 of 5</div>
+  <div class="header-title">Cambodian &amp; SE Asian Cuisine</div>
+  <div class="header-khmer">ម្ហូបខ្មែរ និងអាស៊ីអាគ្នេយ៍</div>
+  <div class="header-sub">Ingredients · Flavour balancing · Techniques · Romdeng context</div>
+  <div class="pathway-pills">
+    <span class="pill pill-done">✓ K1: Safety</span>
+    <span class="pill pill-now">▶ K2: Cambodian Cuisine</span>
+    <span class="pill pill-next">K3: Western Cuisine</span>
+    <span class="pill pill-next">K4: Communication</span>
+    <span class="pill pill-next">K5: Food Safety</span>
+  </div>
+</div>
+<div class="progress-bar-wrap">
+  <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+  <div class="progress-label" id="progressLabel">0 of 24</div>
+</div>
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#FFB800"></div>Ladder ↑</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#C02020"></div>Snake ↓</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#2A4A2A"></div>Move on</div>
+  <div class="legend-item"><div class="legend-dot" style="background:rgba(255,184,0,0.8)"></div>You are here</div>
+</div>
+<div class="board-container">
+  <div class="board-label">24 squares · the heart of Cambodian cooking</div>
+  <div class="board-grid" id="boardGrid"></div>
+</div>
+<div class="card-overlay" id="cardOverlay" onclick="handleOverlayClick(event)">
+  <div class="card">
+    <div class="card-handle"></div>
+    <div class="card-header">
+      <div class="card-meta" id="cardMeta"><span id="cardMetaIcon"></span><span class="card-type-badge" id="cardTypeBadge"></span></div>
+      <div class="card-title" id="cardTitle"></div>
+      <div class="card-khmer" id="cardKhmer"></div>
+      <div class="card-progress-note" id="cardProgressNote"></div>
+    </div>
+    <div class="card-body">
+      <div class="situation-label">📍 SITUATION</div>
+      <div class="situation-text" id="cardScenario"></div>
+      <div class="options-label">❓ WHAT DO YOU DO?</div>
+      <div class="options" id="cardOptions"></div>
+      <div class="consequence" id="cardConsequence"></div>
+      <div class="pro-tip" id="proTip"><span class="pro-tip-label">🌿 Kitchen wisdom</span><span id="proTipText"></span></div>
+      <div class="jump-notice" id="jumpNotice"></div>
+      <button class="action-btn primary" id="actionBtn" onclick="handleAction()">Choose your answer</button>
+    </div>
+  </div>
+</div>
+<div class="completion" id="completionScreen">
+  <div class="completion-icon">🍜</div>
+  <div class="completion-title">K2 Complete!</div>
+  <div class="completion-sub">You understand the foundation of Cambodian cuisine.<br>You are ready to cook at Romdeng.</div>
+  <div class="completion-khmer">អ្នកយល់ដឹងពីម្ហូបខ្មែរហើយ!</div>
+  <div class="completion-stats">
+    <div class="stat-box"><div class="stat-num" id="statCorrect">0</div><div class="stat-label">Correct</div></div>
+    <div class="stat-box"><div class="stat-num">24</div><div class="stat-label">Squares</div></div>
+    <div class="stat-box"><div class="stat-num" id="statLadders">0</div><div class="stat-label">Ladders</div></div>
+  </div>
+  <div class="next-board-box">🔓 Next: <strong>Kitchen Board 3 — Western Cuisine Fundamentals</strong><br>Mise en place · Sauce bases · Temperatures · Friends the Restaurant context</div>
+  <button class="restart-btn" onclick="restartGame()">Play Again</button>
+</div>
+<script>
+const SQUARES=[
+  {num:1,type:'move',icon:'🌿',title:'The Five Cambodian Flavours',khmer:'រសជាតិប្រាំ',scenario:'Cambodian cuisine balances five key flavour profiles. Which combination is correct?',options:['Sweet, sour, salty, bitter, spicy.','Sweet, sour, salty, umami, spicy — with aromatic herbs as the foundation layer.','Hot, mild, sweet, sour, plain.'],correct:'B',good:'Correct. Sweet, sour, salty, umami, spicy — and always the aromatic herb base underneath. Move on.',bad:'The five flavours in Cambodian cooking have a specific character. The herb foundation is what distinguishes Khmer cuisine.',tip:'Cambodian cooking rarely has one dominant flavour — it seeks balance. Adjust one and you must adjust the others.'},
+  {num:2,type:'ladder',icon:'🐟',ladderTo:6,title:'Prahok — The Foundation',khmer:'ប្រហុក',scenario:'A head chef asks you: "What is prahok and why is it important?" What do you say?',options:['It is a Cambodian sauce used for dipping.','It is fermented fish paste — salted and aged. It is the umami backbone of Cambodian cooking. Without it, many dishes lack depth.','It is a type of Cambodian fish curry.'],correct:'B',good:'Correct. Fermented, salted, aged, umami backbone. Prahok is to Cambodian cooking what fish sauce is to Thai or miso to Japanese.',bad:'Prahok is not a sauce or a curry. It is a fermented paste — the foundational flavour of the cuisine.',jumpText:'🌿 LADDER! Prahok knowledge → advance to Square 6',tip:'Smell prahok before you taste it. It is confronting. Then taste a dish made with it. The transformation will surprise you.'},
+  {num:3,type:'move',icon:'🌾',title:'Kroeung — The Spice Paste',khmer:'គ្រឿង',scenario:'You are asked to make kroeung, the Cambodian spice paste base. Which ingredients belong in it?',options:['Chilli, garlic, ginger, and soy sauce.','Lemongrass, galangal, kaffir lime leaves, turmeric, garlic, and shallots — ground together.','Lemongrass, coconut milk, fish sauce, and sugar.'],correct:'B',good:'Kroeung: lemongrass, galangal, kaffir lime leaf, turmeric, garlic, shallots. This paste is the aromatic foundation of many Cambodian dishes.',bad:'Kroeung is a dry-ground aromatic paste, not a sauce or a liquid. Coconut milk and fish sauce are added later.',tip:'Make kroeung fresh whenever possible. The difference between fresh and jarred paste is the difference between a dish and an experience.'},
+  {num:4,type:'snake',icon:'🥄',snakeTo:1,title:'Fish Amok — Over-stirred',khmer:'ការប្រើសាច់ត្រីច្រើនពេក',scenario:'You are steaming fish amok. The mixture was stirred too vigorously after the egg was added. The texture is wrong — it has become liquid instead of mousse-like. What happened?',options:['The fish was not fresh enough.','Over-stirring after adding egg breaks the protein structure. Amok requires gentle folding, not aggressive mixing.','The coconut milk was too thick.'],correct:'B',good:'Amok is a delicate mousse. Over-stirring after the egg is added collapses the structure. Gentle folding preserves it.',bad:'Freshness and coconut milk consistency affect flavour — but the texture failure here is a technique error.',jumpText:'🔴 SNAKE! Technique error on amok → slide back to Square 1'},
+  {num:5,type:'move',icon:'🫚',title:'Frying Aromatics — The Right Moment',khmer:'ចៀនគ្រឿងក្រអូប',scenario:'You are frying sliced shallots and garlic in oil to start a Cambodian curry base. When are they ready to add the kroeung paste?',options:['When the oil is very hot — add immediately.','When the shallots are golden and fragrant — before they burn.','When the garlic is dark brown and crispy.'],correct:'B',good:'Golden and fragrant is the signal. This is the foundation flavour of the dish — burn it and the whole dish carries that bitterness.',bad:'Adding too early means undercooked aromatics. Dark brown garlic means burnt — the dish is ruined before it starts.'},
+  {num:6,type:'move',icon:'🌶️',title:'Balancing Heat in a Cambodian Dish',khmer:'តុល្យភាពហឹរ',scenario:'You taste a Cambodian beef stir-fry and it is too spicy. How do you correct the heat level without starting again?',options:['Add water to dilute it.','Add a small amount of palm sugar or coconut milk to soften the heat — taste after each addition.','Add more fish sauce to balance.'],correct:'B',good:'Palm sugar or coconut milk counterbalances heat without diluting flavour. Taste after each small addition. Move on.',bad:'Water dilutes everything. More fish sauce adds salt and umami — it does not reduce heat.'},
+  {num:7,type:'ladder',icon:'🥥',ladderTo:11,title:'Coconut Milk — First and Second Press',khmer:'ទឹកដូង',scenario:'A chef asks you the difference between first press and second press coconut milk. What do you say?',options:['There is no real difference — it is all the same.','First press is rich and thick — coconut cream. Second press is thinner and lighter — coconut milk. Different dishes require different richness.','First press is sweeter; second press is more savoury.'],correct:'B',good:'First press = thick and rich (coconut cream). Second press = lighter (coconut milk). Using the wrong one changes the dish\'s texture and body.',bad:'The difference is not sweetness — it is fat content and richness, which affects texture.',jumpText:'🌿 LADDER! Coconut knowledge → advance to Square 11',tip:'Fish amok uses coconut milk — lighter. A rich curry like Cambodian beef amok uses coconut cream. Know your dish before you open the can.'},
+  {num:8,type:'move',icon:'🍋',title:'Tamarind — Sourcing the Sour',khmer:'អំពិល',scenario:'A dish calls for tamarind water. You have a block of compressed tamarind. How do you prepare it?',options:['Use it directly — shave off pieces as needed.','Soak the tamarind block in warm water, work it with your fingers to dissolve the pulp, then strain out the seeds and fibres.','Blend the whole block with water.'],correct:'B',good:'Soak, dissolve, strain. This is how tamarind water is made from a compressed block. Move on.',bad:'Using it directly creates texture problems. Blending the seeds and fibres produces an unusable liquid.'},
+  {num:9,type:'snake',icon:'🧂',snakeTo:5,title:'Over-Salting with Fish Sauce',khmer:'ប្រៃពេក',scenario:'You add fish sauce to a soup and it is now too salty. There is no more time to make the dish again. What is the best recovery?',options:['Add more water and reduce the soup again.','Add a small amount of palm sugar to balance the salt, and a squeeze of lime to redirect attention away from the saltiness.','Add coconut milk to soften the saltiness.'],correct:'B',good:'Sugar and lime redirect and soften saltiness without diluting the dish. This is the Cambodian balance principle in practice.',bad:'Water plus reduction concentrates salt further. Coconut milk changes the dish character significantly.',jumpText:'🔴 SNAKE! Over-salted dish — technique gap → slide back to Square 5'},
+  {num:10,type:'move',icon:'🫘',title:'Galangal vs Ginger',khmer:'ខ្ញី និងព្រីង',scenario:'A junior confuses galangal with ginger. What is the key difference you explain?',options:['They are the same — just different names in different countries.','Galangal is harder, more piney and peppery, and cannot be used as a substitute for ginger. Ginger is softer, warmer, and more pungent.','Galangal is sweeter than ginger.'],correct:'B',good:'Galangal: harder, piney, peppery. Ginger: softer, warm, pungent. Not interchangeable — substituting one for the other changes the dish significantly.',bad:'They are not the same. Galangal sweeter than ginger is also incorrect — galangal is more medicinal and piney.'},
+  {num:11,type:'move',icon:'🌱',title:'Fresh Herbs — When to Add',khmer:'ដើមស្មៅស្រស់',scenario:'You are finishing a Cambodian fish soup. When do you add the fresh herbs — morning glory, Asian basil, and sawtooth coriander?',options:['At the beginning with the stock.','In the last thirty seconds before serving — fresh herbs lose fragrance and colour with prolonged heat.','After the dish is plated and on the pass.'],correct:'B',good:'Last thirty seconds. Fresh herbs are fragrant and visual. Heat destroys both. Move on.',bad:'Adding at the beginning cooks the herbs until grey and flavourless. After plating is too late for heat-wilted herbs to integrate.'},
+  {num:12,type:'ladder',icon:'🏛️',ladderTo:16,title:'Royal Cambodian Cuisine',khmer:'ម្ហូបពិសេសសម្លីក្សត្រ',scenario:'A guest at Romdeng asks what makes Romdeng\'s menu different from street food. What do you tell the kitchen team they are cooking?',options:['More expensive ingredients.','Dishes descended from royal court cooking of the Khmer Empire — refined techniques, complex flavour layering, and presentation rooted in centuries of culinary tradition.','Cleaner cooking with better hygiene.'],correct:'B',good:'Romdeng serves royal Cambodian cuisine. Knowing this changes how you cook — every dish carries cultural weight.',bad:'Price and hygiene are not the story. The story is the Khmer Empire and its culinary legacy.',jumpText:'🌿 LADDER! Cultural food knowledge → advance to Square 16',tip:'When you cook at Romdeng, you are not just making food. You are continuing a tradition that survived the Khmer Rouge. That matters.'},
+  {num:13,type:'move',icon:'🐟',title:'Fresh Fish — How to Check',khmer:'ត្រីស្រស់',scenario:'You need to check if a whole fish is fresh before using it. What do you look for?',options:['It should not smell of anything.','Clear bright eyes, red gills, firm flesh that springs back when pressed, and a mild ocean smell — not fishy or ammonia-like.','It should smell strongly of the sea.'],correct:'B',good:'Clear eyes, red gills, firm flesh, mild smell. Four indicators of freshness. Move on.',bad:'"No smell" is not achievable — fresh fish has a mild ocean smell. A strong fishy or ammonia smell means deterioration.'},
+  {num:14,type:'snake',icon:'🔥',snakeTo:9,title:'Wok Hei — Lost It',khmer:'ភ្លើងខ្ពស់',scenario:'You are stir-frying beef lok lak. You add too much beef to the wok at once. The temperature drops and the beef is now steaming in its own liquid instead of frying. What went wrong?',options:['The beef was not marinated correctly.','Too much protein in the wok drops the temperature below what is needed for the Maillard reaction. Cook in smaller batches.','The wok was not seasoned properly.'],correct:'B',good:'Overcrowding drops temperature. Stir-fry requires high heat throughout. Small batches preserve that heat.',bad:'Marinade and seasoning are not the issue here. This is a temperature and volume error.',jumpText:'🔴 SNAKE! Overcrowded wok — temperature error → slide back to Square 9'},
+  {num:15,type:'move',icon:'🍚',title:'Jasmine Rice — Correct Absorption',khmer:'បាយ',scenario:'You are cooking jasmine rice by the absorption method. The lid is on. Steam is escaping. What do you do?',options:['Lift the lid to check if it is done.','Leave the lid on and do not lift it. Escaping steam is normal — lifting releases the steam needed for absorption.','Turn the heat up to speed the process.'],correct:'B',good:'Leave the lid on. The steam inside is what cooks the rice. Lifting it releases the steam and produces uneven cooking.',bad:'Lifting the lid is the most common rice error. Increasing heat without the lid burns the bottom and undercooks the top.'},
+  {num:16,type:'move',icon:'🥬',title:'Stir-Fried Morning Glory',khmer:'ចំហុយ',scenario:'You are stir-frying morning glory (water spinach) with garlic and oyster sauce. How do you know when it is ready?',options:['When it has cooked for three minutes.','When the stems are tender-crisp and the leaves are wilted but still bright green — thirty to sixty seconds on high heat.','When the leaves are dark green and fully wilted.'],correct:'B',good:'Tender-crisp stems, bright green leaves. Thirty to sixty seconds. Overcooking produces grey, mushy vegetation.',bad:'Three minutes is far too long. Dark and fully wilted means overcooked — the dish has lost its vitality.'},
+  {num:17,type:'ladder',icon:'🫙',ladderTo:21,title:'Making Amok from Scratch',khmer:'ធ្វើបញ្ចុក',scenario:'You have been asked to prepare fish amok for the first time without supervision. You have the recipe. What do you do before you start cooking?',options:['Read the recipe once and begin.','Read the recipe twice, prepare all ingredients, make the kroeung fresh, portion the fish, and taste the coconut-kroeung base before steaming anything.','Ask a senior chef to watch you.'],correct:'B',good:'Mise en place for amok: read twice, prepare everything, make fresh kroeung, taste the base. Then cook. Amok rewards preparation.',bad:'Reading once misses details. A senior watching is helpful but not required if you have prepared correctly.',jumpText:'🌿 LADDER! Amok preparation mastery → advance to Square 21',tip:'Amok is Cambodia\'s national dish. Its reputation at Romdeng rests on the kroeung you make fresh, the fish you choose carefully, and the patience of the steam.'},
+  {num:18,type:'move',icon:'🌾',title:'Cambodian vs Thai Cuisine',khmer:'ខ្មែរ ប្រៀបធៀបនឹងថៃ',scenario:'A new student asks: "How is Cambodian food different from Thai food?" What do you tell them?',options:['They are almost the same — just different countries.','Cambodian cuisine is generally less spicy and sweeter than Thai, uses prahok rather than shrimp paste, and has a stronger Chinese influence in its techniques.','Cambodian food uses more coconut milk.'],correct:'B',good:'Less spicy than Thai, prahok not shrimp paste, stronger Chinese technique influence. These distinctions matter at Romdeng.',bad:'They share ingredients but are distinct cuisines. Coconut milk use is similar between both.'},
+  {num:19,type:'snake',icon:'🌊',snakeTo:14,title:'Stock — Not Skimmed',khmer:'ទំពាំង',scenario:'You are making a Cambodian pork bone stock for soup. After thirty minutes, there is a grey foam on the surface. You ignore it and continue. What is the problem?',options:['Nothing — the foam incorporates into the stock.',' The foam is coagulated blood and impurities. Not skimming produces a cloudy, bitter stock.','The foam means the heat is too high.'],correct:'B',good:'Skim the foam. It is impurities. A clear, clean stock is the foundation of a clean-tasting soup.',bad:'The foam does not incorporate cleanly — it produces cloudiness and off-flavours throughout the stock.',jumpText:'🔴 SNAKE! Stock not skimmed — foundation error → slide back to Square 14'},
+  {num:20,type:'move',icon:'🍌',title:'Banana Leaf — Preparing for Amok',khmer:'ស្លឹកចេក',scenario:'You need to prepare banana leaf cups for steaming fish amok. The leaves are stiff and crack when folded. What do you do?',options:['Use them anyway — they will soften in the steamer.','Pass the leaves briefly over a gas flame or dip in hot water to soften them before folding.','Use aluminium foil instead.'],correct:'B',good:'Brief heat relaxes the leaf fibres and allows clean folding without cracking. Move on.',bad:'Cracked leaves leak during steaming. Foil works but loses the aromatic and visual quality that banana leaf brings.'},
+  {num:21,type:'move',icon:'🐠',title:'Whole Fish — Presentation',khmer:'ត្រីទាំងមូល',scenario:'You have cooked a whole steamed fish with ginger and spring onion. How do you present it to the pass for service?',options:['Place it on the plate and garnish with whatever is available.','Plate with the spine away from the diner, garnish with fresh julienned ginger, spring onion, and coriander placed just before service.','The kitchen does not control presentation — leave it to the floor team.'],correct:'B',good:'Spine away from the diner. Fresh garnish at the last moment. Every detail of presentation is a kitchen responsibility. Move on.',bad:'Random garnish shows no intention. The floor team plates what the kitchen sends — presentation starts in the kitchen.'},
+  {num:22,type:'ladder',icon:'🎓',ladderTo:24,title:'Teaching the Flavour Balance',khmer:'បង្រៀនតុល្យភាព',scenario:'A new student has made a Cambodian soup that is too sour. They look frustrated. What do you tell them?',options:['Add more water and start again.','Taste it and walk them through the balance: "Add a small amount of palm sugar — taste. Add a small amount of fish sauce — taste. This is how you learn to balance."','Tell them the recipe must be wrong.'],correct:'B',good:'Walking through the balance in real time is how Cambodian cooking is actually learned. This is mentorship through tasting.',bad:'Starting again wastes product and learning opportunity. Blaming the recipe removes the student\'s agency.',jumpText:'🌿 LADDER! Teaching through tasting → advance to Square 24',tip:'Cambodian cooking is learned through the palate, not the recipe. Teach students to taste and adjust — not to follow instructions blindly.'},
+  {num:23,type:'move',icon:'🌺',title:'Seasonal Ingredients — Adaptation',khmer:'គ្រឿងសម្ភារតាមរដូវ',scenario:'The ingredient specified in a recipe is not available today — it is out of season. What is the correct first response?',options:['Make the dish anyway without that ingredient.','Tell the head chef immediately and ask what substitution is appropriate — never substitute without authorisation.','Substitute the closest ingredient you can find.'],correct:'B',good:'Never substitute without authorisation. The head chef decides what change is appropriate for the menu. Move on.',bad:'Unauthorised substitution changes a dish that guests may have ordered specifically. Always escalate first.'},
+  {num:24,type:'ladder',icon:'🏆',ladderTo:0,title:'K2 Complete — Cambodian Cuisine',khmer:'ម្ហូបខ្មែរ',scenario:'Your head chef tastes your first solo fish amok. They say: "The kroeung is fresh, the texture is correct, and the balance is right." What made the difference?',options:['I followed the recipe exactly.','I made the kroeung fresh, tasted the base before steaming, folded gently after the egg, and timed the steam carefully.','I watched YouTube videos about amok.'],correct:'B',good:'Fresh kroeung, tasted base, gentle fold, careful timing. These are the four skills that produced the result. K2 COMPLETE! 🍜',bad:'Recipe following alone does not produce excellence. Skill and attention produce excellence.',jumpText:'🍜 K2 COMPLETE! Kitchen Board 3 — Western Cuisine Fundamentals unlocked'}
+];
+let currentSquare=1,completedSquares=new Set(),correctAnswers=0,laddersClimbed=0,answered=false,selectedOption=null,pendingJump=null;
+function buildBoard(){const grid=document.getElementById('boardGrid');grid.innerHTML='';const rows=[];for(let r=0;r<4;r++){const rs=[];for(let c=0;c<6;c++)rs.push(r*6+c+1);if(r%2===1)rs.reverse();rows.push(rs);}for(let r=rows.length-1;r>=0;r--){for(let c=0;c<rows[r].length;c++){const num=rows[r][c];const sq=SQUARES[num-1];const el=document.createElement('div');el.className=`sq ${sq.type}-sq`;el.id=`sq-${num}`;if(num===currentSquare)el.classList.add('current');if(completedSquares.has(num))el.classList.add('completed');if(num>currentSquare&&!completedSquares.has(num))el.classList.add('locked');el.innerHTML=`<span class="sq-num">${num}</span><span class="sq-icon">${sq.icon}</span><span class="sq-badge">${sq.type==='ladder'?'⬆':sq.type==='snake'?'⬇':''}</span>`;el.onclick=()=>openSquare(num);grid.appendChild(el);}}}
+function updateProgress(){const pct=(completedSquares.size/24)*100;document.getElementById('progressFill').style.width=pct+'%';document.getElementById('progressLabel').textContent=`${completedSquares.size} of 24`;}
+function openSquare(num){if(num!==currentSquare&&!completedSquares.has(num))return;const sq=SQUARES[num-1];answered=false;selectedOption=null;pendingJump=null;const metaEl=document.getElementById('cardMeta');const badgeEl=document.getElementById('cardTypeBadge');const mi=document.getElementById('cardMetaIcon');if(sq.type==='ladder'){metaEl.className='card-meta ladder';mi.textContent='🌿 ';badgeEl.className='card-type-badge badge-ladder';badgeEl.textContent='LADDER SQUARE';}else if(sq.type==='snake'){metaEl.className='card-meta snake';mi.textContent='🔴 ';badgeEl.className='card-type-badge badge-snake';badgeEl.textContent='SNAKE SQUARE';}else{metaEl.className='card-meta move';mi.textContent='⬜ ';badgeEl.className='card-type-badge badge-move';badgeEl.textContent='MOVE ON';}document.getElementById('cardTitle').textContent=`${sq.icon}  ${sq.title}`;document.getElementById('cardKhmer').textContent=sq.khmer;document.getElementById('cardProgressNote').textContent=`Square ${num} of 24  ·  Kitchen Board 2 of 5`;document.getElementById('cardScenario').textContent=sq.scenario;const optionsEl=document.getElementById('cardOptions');optionsEl.innerHTML='';['A','B','C'].forEach((letter,i)=>{const btn=document.createElement('button');btn.className='option-btn';btn.id=`opt-${letter}`;btn.innerHTML=`<span class="option-letter">${letter}</span><span class="option-text">${sq.options[i]}</span>`;if(completedSquares.has(num)){btn.disabled=true;if(letter===sq.correct)btn.classList.add('reveal-correct');}else btn.onclick=()=>selectOption(letter,num);optionsEl.appendChild(btn);});document.getElementById('cardConsequence').className='consequence';document.getElementById('jumpNotice').className='jump-notice';document.getElementById('proTip').className='pro-tip';const btn=document.getElementById('actionBtn');if(completedSquares.has(num)){btn.textContent='✓ Already completed';btn.className='action-btn primary';btn.disabled=true;btn.style.opacity='0.5';}else{btn.textContent='Choose your answer';btn.className='action-btn primary';btn.disabled=false;btn.style.opacity='1';}document.getElementById('cardOverlay').classList.add('open');}
+function selectOption(letter,sqNum){if(answered)return;selectedOption=letter;['A','B','C'].forEach(l=>{const b=document.getElementById(`opt-${l}`);if(b)b.classList.remove('selected-correct','selected-wrong');});const sq=SQUARES[sqNum-1];const btn=document.getElementById(`opt-${letter}`);if(btn)btn.classList.add(letter===sq.correct?'selected-correct':'selected-wrong');document.getElementById('actionBtn').textContent='Confirm answer →';}
+function handleAction(){const sq=SQUARES[currentSquare-1];if(!answered){if(!selectedOption)return;answered=true;const correct=selectedOption===sq.correct;if(correct)correctAnswers++;['A','B','C'].forEach(l=>{const btn=document.getElementById(`opt-${l}`);if(!btn)return;btn.disabled=true;if(l===sq.correct)btn.classList.add('reveal-correct');else btn.classList.remove('selected-wrong');});const conseq=document.getElementById('cardConsequence');conseq.className=correct?'consequence good show':'consequence bad show';conseq.innerHTML=`<span>${correct?'✅':'❌'}</span> ${correct?sq.good:sq.bad}`;if(sq.tip){document.getElementById('proTip').className='pro-tip show';document.getElementById('proTipText').textContent=sq.tip;}if(correct&&sq.ladderTo){pendingJump={type:'ladder',to:sq.ladderTo};laddersClimbed++;const n=document.getElementById('jumpNotice');n.className='jump-notice ladder show';n.textContent=sq.jumpText||`🌿 LADDER! → Square ${sq.ladderTo}`;document.getElementById('actionBtn').textContent=`Advance → Square ${sq.ladderTo}`;document.getElementById('actionBtn').className='action-btn success';}else if(!correct&&sq.snakeTo){pendingJump={type:'snake',to:sq.snakeTo};const n=document.getElementById('jumpNotice');n.className='jump-notice snake show';n.textContent=sq.jumpText||`🔴 SNAKE! → Square ${sq.snakeTo}`;document.getElementById('actionBtn').textContent=`Slide back → Square ${sq.snakeTo}`;document.getElementById('actionBtn').className='action-btn danger';}else{document.getElementById('actionBtn').textContent=correct?'Move on →':'Understood → Move on';document.getElementById('actionBtn').className=correct?'action-btn success':'action-btn primary';}}else{completedSquares.add(currentSquare);let next=currentSquare+1;if(pendingJump)next=pendingJump.to;closeCard();if(currentSquare===24){setTimeout(showCompletion,400);return;}currentSquare=Math.min(next,24);buildBoard();updateProgress();setTimeout(()=>{const el=document.getElementById(`sq-${currentSquare}`);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},300);}}
+function closeCard(){document.getElementById('cardOverlay').classList.remove('open');}
+function handleOverlayClick(e){if(e.target===document.getElementById('cardOverlay'))closeCard();}
+function showCompletion(){document.getElementById('statCorrect').textContent=correctAnswers;document.getElementById('statLadders').textContent=laddersClimbed;document.getElementById('completionScreen').classList.add('show');}
+function restartGame(){currentSquare=1;completedSquares=new Set();correctAnswers=0;laddersClimbed=0;answered=false;selectedOption=null;pendingJump=null;document.getElementById('completionScreen').classList.remove('show');buildBoard();updateProgress();}
+buildBoard();updateProgress();setTimeout(()=>openSquare(1),800);
+</script>
+<link rel="manifest" href="/vocational-boards/manifest.json">
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function() {
+    navigator.serviceWorker.register("/vocational-boards/sw.js")
+      .then(function() { console.log("Offline ready"); })
+      .catch(function(e) { console.log("SW error", e); });
+  });
+}
+</script>
+</body>
+</html>

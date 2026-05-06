@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Kitchen Board 1 — Safety and Orientation</title>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700&family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{--teal:#1A6B72;--teal-dark:#0F4A50;--teal-light:#2A8F98;--amber:#C47F00;--amber-light:#FFB800;--green:#1A7A3C;--green-light:#22A050;--red:#8B1A1A;--red-light:#C02020;--orange:#C45000;--orange-light:#FF6B00;--cream:#FDF8F0;--dark:#1A1A1A;--mid:#555;--white:#FFFFFF;}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  body{font-family:'Sarabun',sans-serif;background:#1A0A00;color:var(--dark);min-height:100vh;overflow-x:hidden;}
+  .header{background:linear-gradient(135deg,#2A1000 0%,#4A1A00 50%,#6A2800 100%);padding:18px 16px 14px;text-align:center;border-bottom:3px solid var(--orange-light);}
+  .header-board-num{font-family:'Kanit',sans-serif;font-size:10px;font-weight:600;letter-spacing:2px;color:var(--orange-light);text-transform:uppercase;margin-bottom:4px;}
+  .header-title{font-family:'Kanit',sans-serif;font-size:21px;font-weight:700;color:var(--white);line-height:1.2;}
+  .header-khmer{font-size:13px;color:rgba(255,255,255,0.82);margin-top:4px;}
+  .header-sub{font-size:11px;color:rgba(255,255,255,0.65);margin-top:3px;font-style:italic;}
+  .pathway-pills{display:flex;justify-content:center;gap:6px;margin-top:8px;flex-wrap:wrap;}
+  .pill{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:600;}
+  .pill-now{background:rgba(255,107,0,0.3);color:var(--orange-light);border:1px solid rgba(255,107,0,0.5);}
+  .pill-next{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.15);}
+  .progress-bar-wrap{background:rgba(0,0,0,0.4);padding:10px 16px;display:flex;align-items:center;gap:10px;}
+  .progress-bar-bg{flex:1;height:8px;background:rgba(255,255,255,0.12);border-radius:4px;overflow:hidden;}
+  .progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--orange-light),var(--amber-light));border-radius:4px;transition:width 0.5s ease;}
+  .progress-label{font-family:'Kanit',sans-serif;font-size:11px;color:rgba(255,255,255,0.75);white-space:nowrap;min-width:60px;text-align:right;}
+  .legend{display:flex;justify-content:center;gap:14px;padding:9px 16px 6px;background:rgba(0,0,0,0.3);flex-wrap:wrap;}
+  .legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,0.6);}
+  .legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+  .board-container{padding:12px 10px 8px;background:#1A0A00;}
+  .board-label{font-family:'Kanit',sans-serif;font-size:10px;letter-spacing:1.5px;color:rgba(255,255,255,0.35);text-align:center;margin-bottom:8px;text-transform:uppercase;}
+  .board-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:3px;max-width:420px;margin:0 auto;}
+  .sq{aspect-ratio:1;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;transition:transform 0.15s ease;border:2px solid transparent;user-select:none;}
+  .sq:active{transform:scale(0.92);}
+  .sq.ladder-sq{background:#2A1A00;border-color:var(--orange-light);}
+  .sq.snake-sq{background:#4A1A1A;border-color:#C02020;}
+  .sq.move-sq{background:#1A1A2A;border-color:#3A3A6A;}
+  .sq.current{border-color:var(--orange-light)!important;box-shadow:0 0 0 3px rgba(255,107,0,0.5);transform:scale(1.08);z-index:2;}
+  .sq.completed{opacity:0.52;}.sq.locked{opacity:0.3;cursor:not-allowed;}
+  .sq-num{font-family:'Kanit',sans-serif;font-size:9px;font-weight:600;color:rgba(255,255,255,0.45);position:absolute;top:2px;left:4px;}
+  .sq-icon{font-size:20px;line-height:1;}
+  .sq-badge{position:absolute;bottom:2px;right:2px;font-size:8px;}
+  .sq.current .sq-icon{animation:bounce 0.8s infinite alternate;}
+  @keyframes bounce{from{transform:translateY(0);}to{transform:translateY(-3px);}}
+  .card-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:100;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.25s ease;}
+  .card-overlay.open{opacity:1;pointer-events:all;}
+  .card{background:var(--cream);width:100%;max-height:90vh;border-radius:24px 24px 0 0;overflow-y:auto;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);padding-bottom:env(safe-area-inset-bottom,20px);}
+  .card-overlay.open .card{transform:translateY(0);}
+  .card::-webkit-scrollbar{display:none;}.card{-ms-overflow-style:none;scrollbar-width:none;}
+  .card-handle{width:40px;height:4px;background:rgba(0,0,0,0.18);border-radius:2px;margin:12px auto 0;}
+  .card-header{padding:16px 20px 14px;border-bottom:2px solid rgba(0,0,0,0.07);}
+  .card-meta{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+  .card-meta.ladder{color:var(--orange);}.card-meta.snake{color:var(--red-light);}.card-meta.move{color:var(--teal);}
+  .card-type-badge{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:700;}
+  .badge-ladder{background:#FFF0E0;color:var(--orange);}.badge-snake{background:#F5E0E0;color:var(--red-light);}.badge-move{background:#E0F0F5;color:var(--teal);}
+  .card-title{font-family:'Kanit',sans-serif;font-size:20px;font-weight:700;color:var(--dark);line-height:1.25;margin-bottom:4px;}
+  .card-khmer{font-size:14px;color:var(--mid);margin-bottom:2px;}
+  .card-progress-note{font-size:11px;color:rgba(0,0,0,0.38);margin-top:4px;}
+  .card-body{padding:16px 20px;}
+  .situation-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--orange);margin-bottom:8px;}
+  .situation-text{font-family:'Kanit',sans-serif;font-size:17px;font-weight:600;color:var(--dark);line-height:1.4;margin-bottom:16px;background:rgba(196,80,0,0.07);padding:12px 14px;border-radius:10px;border-left:4px solid var(--orange);}
+  .options-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+  .options{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+  .option-btn{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:12px;border:2px solid rgba(0,0,0,0.1);background:var(--white);cursor:pointer;text-align:left;transition:all 0.2s ease;font-family:'Sarabun',sans-serif;font-size:15px;color:var(--dark);width:100%;}
+  .option-btn:active{transform:scale(0.98);}
+  .option-btn.selected-correct{background:#E8F5EC;border-color:var(--green-light);color:var(--green);}
+  .option-btn.selected-wrong{background:#F5E8E8;border-color:var(--red-light);color:var(--red);}
+  .option-btn.reveal-correct{background:#E8F5EC;border-color:var(--green-light);color:var(--green);}
+  .option-letter{font-family:'Kanit',sans-serif;font-weight:700;font-size:15px;min-width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,0.07);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+  .option-text{flex:1;line-height:1.4;}
+  .consequence{border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:14px;line-height:1.5;display:none;}
+  .consequence.show{display:block;}
+  .consequence.good{background:#E8F5EC;border-left:4px solid var(--green-light);color:var(--green);}
+  .consequence.bad{background:#F5E8E8;border-left:4px solid var(--red-light);color:var(--red-light);}
+  .jump-notice{font-family:'Kanit',sans-serif;font-size:14px;font-weight:700;text-align:center;padding:10px;border-radius:10px;margin-bottom:14px;display:none;}
+  .jump-notice.show{display:block;}
+  .jump-notice.ladder{background:#FFE8CC;color:var(--orange);}
+  .jump-notice.snake{background:#EBC6C6;color:var(--red);}
+  .pro-tip{background:rgba(196,80,0,0.08);border-left:3px solid var(--orange);border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:13px;color:#7A3000;line-height:1.5;display:none;}
+  .pro-tip.show{display:block;}
+  .pro-tip-label{font-weight:700;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--orange);display:block;margin-bottom:3px;}
+  .action-btn{display:block;width:100%;padding:16px;border-radius:14px;border:none;font-family:'Kanit',sans-serif;font-size:17px;font-weight:700;cursor:pointer;transition:all 0.2s ease;text-align:center;}
+  .action-btn:active{transform:scale(0.97);}
+  .action-btn.primary{background:linear-gradient(135deg,var(--orange),var(--orange-light));color:var(--white);box-shadow:0 4px 16px rgba(196,80,0,0.4);}
+  .action-btn.success{background:linear-gradient(135deg,var(--green),var(--green-light));color:var(--white);box-shadow:0 4px 16px rgba(26,122,60,0.4);}
+  .action-btn.danger{background:linear-gradient(135deg,var(--red),var(--red-light));color:var(--white);box-shadow:0 4px 16px rgba(139,26,26,0.4);}
+  .completion{position:fixed;inset:0;background:linear-gradient(135deg,#2A1000,#1A0A00);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center;opacity:0;pointer-events:none;transition:opacity 0.5s ease;}
+  .completion.show{opacity:1;pointer-events:all;}
+  .completion-icon{font-size:72px;margin-bottom:16px;}
+  .completion-title{font-family:'Kanit',sans-serif;font-size:28px;font-weight:700;color:var(--orange-light);margin-bottom:8px;}
+  .completion-sub{font-size:15px;color:rgba(255,255,255,0.75);margin-bottom:8px;line-height:1.5;}
+  .completion-khmer{font-size:16px;color:rgba(255,255,255,0.55);margin-bottom:28px;}
+  .completion-stats{display:flex;gap:16px;margin-bottom:28px;flex-wrap:wrap;justify-content:center;}
+  .stat-box{background:rgba(255,255,255,0.1);border-radius:14px;padding:14px 18px;text-align:center;}
+  .stat-num{font-family:'Kanit',sans-serif;font-size:26px;font-weight:700;color:var(--orange-light);}
+  .stat-label{font-size:11px;color:rgba(255,255,255,0.55);margin-top:2px;}
+  .next-board-box{background:rgba(196,80,0,0.2);border:1px solid rgba(196,80,0,0.4);border-radius:14px;padding:14px 20px;margin-bottom:24px;font-size:14px;color:rgba(255,255,255,0.8);text-align:center;line-height:1.6;}
+  .restart-btn{background:var(--orange-light);color:var(--dark);border:none;border-radius:14px;padding:16px 40px;font-family:'Kanit',sans-serif;font-size:17px;font-weight:700;cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-board-num">🔪 Kitchen Pathway · Board 1 of 5</div>
+  <div class="header-title">Kitchen Safety &amp; Orientation</div>
+  <div class="header-khmer">សុវត្ថិភាពផ្ទះបាយ និងការណែនាំ</div>
+  <div class="header-sub">Before you touch anything · Knife safety · Burns · Equipment · Emergency</div>
+  <div class="pathway-pills">
+    <span class="pill pill-now">▶ K1: Safety &amp; Orientation</span>
+    <span class="pill pill-next">K2: Cambodian Cuisine</span>
+    <span class="pill pill-next">K3: Western Cuisine</span>
+    <span class="pill pill-next">K4: Kitchen Communication</span>
+    <span class="pill pill-next">K5: Food Safety &amp; HACCP</span>
+  </div>
+</div>
+<div class="progress-bar-wrap">
+  <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+  <div class="progress-label" id="progressLabel">0 of 24</div>
+</div>
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#FF6B00"></div>Ladder ↑</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#C02020"></div>Snake ↓</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#3A3A6A"></div>Move on</div>
+  <div class="legend-item"><div class="legend-dot" style="background:rgba(255,107,0,0.8)"></div>You are here</div>
+</div>
+<div class="board-container">
+  <div class="board-label">24 squares · complete this board before touching any equipment</div>
+  <div class="board-grid" id="boardGrid"></div>
+</div>
+<div class="card-overlay" id="cardOverlay" onclick="handleOverlayClick(event)">
+  <div class="card">
+    <div class="card-handle"></div>
+    <div class="card-header">
+      <div class="card-meta" id="cardMeta"><span id="cardMetaIcon"></span><span class="card-type-badge" id="cardTypeBadge"></span></div>
+      <div class="card-title" id="cardTitle"></div>
+      <div class="card-khmer" id="cardKhmer"></div>
+      <div class="card-progress-note" id="cardProgressNote"></div>
+    </div>
+    <div class="card-body">
+      <div class="situation-label">📍 SITUATION</div>
+      <div class="situation-text" id="cardScenario"></div>
+      <div class="options-label">❓ WHAT DO YOU DO?</div>
+      <div class="options" id="cardOptions"></div>
+      <div class="consequence" id="cardConsequence"></div>
+      <div class="pro-tip" id="proTip"><span class="pro-tip-label">🔪 Kitchen rule</span><span id="proTipText"></span></div>
+      <div class="jump-notice" id="jumpNotice"></div>
+      <button class="action-btn primary" id="actionBtn" onclick="handleAction()">Choose your answer</button>
+    </div>
+  </div>
+</div>
+<div class="completion" id="completionScreen">
+  <div class="completion-icon">🔪</div>
+  <div class="completion-title">K1 Complete — You May Enter the Kitchen</div>
+  <div class="completion-sub">You know the safety rules.<br>Now you are ready to learn to cook.</div>
+  <div class="completion-khmer">អ្នកអាចចូលផ្ទះបាយបានហើយ!</div>
+  <div class="completion-stats">
+    <div class="stat-box"><div class="stat-num" id="statCorrect">0</div><div class="stat-label">Correct</div></div>
+    <div class="stat-box"><div class="stat-num">24</div><div class="stat-label">Squares</div></div>
+    <div class="stat-box"><div class="stat-num" id="statLadders">0</div><div class="stat-label">Ladders</div></div>
+  </div>
+  <div class="next-board-box">🔓 Next: <strong>Kitchen Board 2 — Cambodian and SE Asian Cuisine Fundamentals</strong><br>Ingredients · Flavour balancing · Traditional techniques · Romdeng context</div>
+  <button class="restart-btn" onclick="restartGame()">Play Again</button>
+</div>
+<script>
+const SQUARES=[
+  {num:1,type:'move',icon:'👀',title:'First Day — Look Before You Touch',khmer:'មើលមុនពេលប៉ះ',scenario:'You arrive in the kitchen for the first time. The head chef tells you to spend the first thirty minutes just observing. What is the most important thing to watch for?',options:['Where the food is stored.','How people move — traffic flow, where hot things travel, where knives are passed.','What dishes are being prepared.'],correct:'B',good:'Kitchen safety starts with understanding how people move. Traffic flow prevents collisions and burns. Move on.',bad:'Food and dishes matter — but movement patterns are what keep you safe.',tip:'In a professional kitchen, always announce your position. "Behind" means someone is passing behind you. Learn it on day one.'},
+  {num:2,type:'ladder',icon:'🔪',ladderTo:6,title:'Carrying a Knife',khmer:'ដឹកកាំបិត',scenario:'You need to carry a chef\'s knife across the kitchen to your station. How do you do it?',options:['Hold it blade up so it is visible to others.','Hold it blade down, point toward the floor, close to your body, and say "sharp" as you walk.','Put it in your apron pocket.'],correct:'B',good:'Blade down, close to body, verbal warning. This is the only correct way to carry a knife in a professional kitchen.',bad:'Blade up creates a collision hazard. A pocket is never a knife carrier.',jumpText:'🔥 LADDER! Correct knife carry → advance to Square 6',tip:'"Sharp" is the word. Say it every time you carry a knife, even if you think no one is nearby.'},
+  {num:3,type:'move',icon:'🔥',title:'The Stove is Already Hot',khmer:'ចង្ក្រានក្តៅ',scenario:'You approach a stove to begin cooking. The burner looks off but you are not sure. What do you do?',options:['Touch the surface quickly to check.','Hold your hand near — not on — the surface to feel for heat, then confirm the burner status visually.','Assume it is off and begin.'],correct:'B',good:'Near, not on. You feel the heat without risking a burn. Move on.',bad:'Touching to check is how burns happen. Assuming is how accidents happen.'},
+  {num:4,type:'snake',icon:'💧',snakeTo:1,title:'Water Near a Hot Oil Pan',khmer:'ទឹកនៅជិតប្រេងក្តៅ',scenario:'You are frying with hot oil. A small amount of water drops into the pan. What happens and what do you do?',options:['Nothing — a little water is fine.','The oil spits violently. Step back immediately, do not add more water, and tell the chef.','Cover the pan with a lid immediately.'],correct:'B',good:'Step back, do not add more water, alert the chef. Water in hot oil causes violent splatter.',bad:'Adding more water or covering immediately without stepping back can cause serious burns.',jumpText:'🔴 SNAKE! Oil and water danger misunderstood → slide back to Square 1'},
+  {num:5,type:'move',icon:'🧤',title:'Heat Protection — Oven Gloves',khmer:'ស្រោមដៃការពារ',scenario:'You need to remove a tray from a hot oven. The oven gloves are on the other side of the kitchen. What do you do?',options:['Use a folded dry cloth — it will be fine.','Get the proper oven gloves. A few seconds is worth it.','Ask someone else to do it.'],correct:'B',good:'The right tool for the right job. A few seconds prevents a burn. Move on.',bad:'A folded cloth provides inadequate protection. Heat transfers through wet or thin material instantly.',tip:'Wet cloths conduct heat. A damp cloth used as an oven mitt will burn your hands.'},
+  {num:6,type:'move',icon:'🩹',title:'You Cut Yourself',khmer:'កាត់ដៃ',scenario:'You cut your finger while chopping. It is bleeding. What do you do immediately?',options:['Wrap it in your apron and continue — you will deal with it after service.','Stop immediately. Apply pressure, find the first aid kit, report to the chef, and get a blue food-safe bandage before returning to work.','Rinse it under water and continue chopping.'],correct:'B',good:'Stop, pressure, first aid kit, report, blue bandage. In that order. Always. Move on.',bad:'Blood near food is a serious contamination hazard. Continuing without reporting is unsafe and against hygiene rules.'},
+  {num:7,type:'ladder',icon:'🚨',ladderTo:11,title:'Fire in the Kitchen',khmer:'អគ្គីភ័យ',scenario:'A pan of oil catches fire on the stove. What do you do?',options:['Pour water on the fire to extinguish it.','Turn off the heat, cover the pan with a lid to starve the fire of oxygen, and call the chef immediately.','Grab the pan and carry it outside.'],correct:'B',good:'Turn off heat, cover with lid, call chef. Never water on oil fire — it explodes.',bad:'Water on an oil fire creates a fireball. Moving a burning pan risks spreading the fire.',jumpText:'🔥 LADDER! Fire response correct → advance to Square 11',tip:'Never water on a grease fire. Lid, or a fire blanket. Water makes it catastrophically worse.'},
+  {num:8,type:'move',icon:'🧹',title:'Your Station — Keep It Clean',khmer:'កន្លែងធ្វើការ',scenario:'You are in the middle of prep. Your cutting board has food scraps, vegetable ends, and a used knife on it. Service starts in twenty minutes. What do you do?',options:['Leave it — you will clean after service.','Clear scraps into the bin, clean the board, and reset your mise en place. A clean station is a safe and efficient station.','Move the scraps to the side so you have more room.'],correct:'B',good:'Clean as you go is a kitchen law. A clean station prevents cross-contamination and speeds up service. Move on.',bad:'Scraps on a board create cross-contamination risk. Moving them to the side is not cleaning.'},
+  {num:9,type:'snake',icon:'🤕',snakeTo:5,title:'Rushing and an Accident Happens',khmer:'ប្រញ៉ាប់ហើយឆ្មាំ',scenario:'Service is starting and you feel rushed. You pick up a knife quickly without looking. It slips and you nearly cut yourself. What does this tell you?',options:['You were unlucky — it happens.','Rushing in a kitchen is a direct cause of accidents. Slow down, focus, and be deliberate even under pressure.','The knife handle was wet — not your fault.'],correct:'B',good:'Rushing causes accidents. This is the lesson. Deliberate movement under pressure is a skill to build.',bad:'Luck and equipment blame both miss the real lesson. Speed without control is the hazard.',jumpText:'🔴 SNAKE! Rushing caused a near-miss → slide back to Square 5'},
+  {num:10,type:'move',icon:'👟',title:'Footwear in the Kitchen',khmer:'ស្បែកជើងក្នុងផ្ទះបាយ',scenario:'You arrive for your first kitchen shift wearing sandals. The chef sends you home to change. Why is this correct?',options:['It is just a rule — rules must be followed.','Kitchen floors are wet and have spills, dropped knives, and heavy equipment. Closed-toe non-slip shoes prevent serious injury.','Sandals look unprofessional.'],correct:'B',good:'You understand why the rule exists. Safety footwear prevents cuts, burns from spills, and slip injuries. Move on.',bad:'Following rules without understanding them means you will not follow them when no one is watching.'},
+  {num:11,type:'move',icon:'🌡️',title:'Checking Oil Temperature',khmer:'ពិនិត្យសីតុណ្ហភាពប្រេង',scenario:'You need to fry but do not have a thermometer. How do you check if the oil is hot enough?',options:['Put your hand near the surface and guess.','Drop a small piece of bread or a wooden chopstick into the oil — bubbles mean it is ready.','Just start frying — you will know when it sizzles.'],correct:'B',good:'The bread or chopstick test is a reliable professional technique. Bubbles indicate the correct temperature range. Move on.',bad:'Guessing by hand proximity is dangerous. Adding food before the oil is ready produces soggy, oil-saturated results.'},
+  {num:12,type:'ladder',icon:'🆘',ladderTo:16,title:'Colleague Burned — Emergency Response',khmer:'ការឆ្លើយតបបន្ទាន់',scenario:'A colleague receives a burn from a hot pan. The burn is on their forearm, red and painful. What do you do?',options:['Apply butter or oil to soothe the burn.','Run cool — not cold — water over the burn for at least ten minutes. Alert the chef immediately.','Cover it with a bandage right away.'],correct:'B',good:'Cool running water for ten minutes is the correct first response. Never butter, oil, or ice on a burn.',bad:'Butter and oil trap heat and increase damage. Ice can cause additional tissue injury. Cool water only.',jumpText:'🔥 LADDER! Correct burn response → advance to Square 16',tip:'Cool water for ten minutes. No butter. No oil. No ice. Just cool running water. Remember this.'},
+  {num:13,type:'move',icon:'🧽',title:'Cross-Contamination — Cutting Board Colours',khmer:'ការការពារការប្រឡាក់',scenario:'You have been using a red cutting board for raw chicken. You now need to chop vegetables. What do you do?',options:['Rinse the red board quickly and use it for vegetables.','Get the correct board for vegetables — green — and leave the red board for raw meat only.','Use any clean board that is available.'],correct:'B',good:'Colour-coded boards exist precisely to prevent cross-contamination. Green for vegetables, red for raw meat. Move on.',bad:'Rinsing is not sanitising. Using any available board ignores the colour system that keeps food safe.'},
+  {num:14,type:'snake',icon:'🐔',snakeTo:9,title:'Raw Chicken — Handling Error',khmer:'សាច់មាន់ឆៅ',scenario:'You handle raw chicken with your bare hands. You then pick up a bunch of fresh herbs without washing your hands. What is the problem?',options:['No problem — the herbs will be cooked anyway.','Raw chicken carries bacteria. Handling food after raw chicken without washing hands transfers those bacteria.','Only a problem if someone sees it.'],correct:'B',good:'Raw chicken to fresh herbs is a cross-contamination chain. This is how foodborne illness happens.',bad:'Herbs used in salads and garnishes may not be cooked. And the principle applies regardless of observation.',jumpText:'🔴 SNAKE! Cross-contamination error → slide back to Square 9'},
+  {num:15,type:'move',icon:'💨',title:'Kitchen Ventilation and Heat',khmer:'ខ្យល់ចេញចូលក្នុងផ្ទះបាយ',scenario:'After thirty minutes on the hot line you feel dizzy and overheated. What do you do?',options:['Push through — it is part of working in a kitchen.','Tell the chef immediately, move away from the heat source, drink water, and sit down if needed.','Open a window yourself.'],correct:'B',good:'Heat exhaustion is a medical condition. Tell the chef, move from the heat, drink water. Move on.',bad:'Pushing through heat exhaustion is dangerous. Unauthorised ventilation changes affect the kitchen environment.'},
+  {num:16,type:'move',icon:'📍',title:'Knowing Your Emergency Exits',khmer:'ច្រកចេញបន្ទាន់',scenario:'On your first day, you should locate which of the following before starting work?',options:['The best knife set in the kitchen.','Emergency exits, fire extinguisher, first aid kit, and the shut-off for the main gas line.','The head chef\'s station.'],correct:'B',good:'Emergency equipment locations are the first thing to learn in any workplace. Before you cook anything. Move on.',bad:'Knives and the head chef\'s position matter — but they are not safety knowledge.',tip:'Emergency knowledge is useless when you need it if you do not have it before you need it.'},
+  {num:17,type:'ladder',icon:'🧴',ladderTo:21,title:'Chemical Storage in the Kitchen',khmer:'ការរក្សាទុកសារធាតុគីមី',scenario:'You see cleaning chemicals stored on the shelf directly above the food preparation area. What do you do?',options:['Leave it — that is where they have always been.','Report it to the chef or supervisor immediately. Chemicals must never be stored above food.','Move them yourself to a lower shelf.'],correct:'B',good:'Report immediately. Chemical contamination of food is a serious safety violation. This is above your authority to fix alone.',bad:'Leaving it risks contamination. Moving it yourself without reporting means the problem is noted by no one.',jumpText:'🔥 LADDER! Safety hazard correctly reported → advance to Square 21'},
+  {num:18,type:'move',icon:'🔈',title:'Announcing Yourself in the Kitchen',khmer:'ប្រកាសខ្លួន',scenario:'You are carrying a heavy pot of boiling water from the stove to the sink. Three colleagues are between you and your destination. What do you say?',options:['Nothing — watch where you are going and move fast.','Say "hot, behind, hot" clearly as you move through the kitchen.','Wait until the path is completely clear.'],correct:'B',good:'"Hot" and "behind" are the two most important words in a professional kitchen. Use them every time. Move on.',bad:'Moving silently with something dangerous is how serious accidents happen. Waiting indefinitely is impractical during service.'},
+  {num:19,type:'snake',icon:'🍳',snakeTo:14,title:'Unattended Pan on High Heat',khmer:'ខ្ទះភ្លើងខ្ពស់គ្មានមនុស្ស',scenario:'You leave a pan of oil on high heat to answer a question from a colleague. You are away for three minutes. What is the risk?',options:['Minimal — three minutes is nothing.','Oil overheats, reaches smoke point, and can catch fire. Never leave oil on high heat unattended.','The oil will just cool down when you return.'],correct:'B',good:'Oil fires start this way. Three minutes is enough. Never leave oil on high heat unattended.',bad:'Three minutes is more than enough for oil to overheat and reach its fire point.',jumpText:'🔴 SNAKE! Unattended oil — serious hazard → slide back to Square 14'},
+  {num:20,type:'move',icon:'🌿',title:'Disposing of Kitchen Waste',khmer:'បោះចោលសំរាម',scenario:'You have a pile of vegetable peelings, used oil in a container, and broken glass from a dropped bowl. How do you dispose of each?',options:['Everything goes in the same bin to save time.','Vegetable waste in organic bin, used oil in the designated oil container, broken glass wrapped in paper then in the bin — never loose.','Everything except the oil in the bin.'],correct:'B',good:'Separate streams for different waste. Broken glass wrapped to protect bin handlers. Used oil designated disposal. Move on.',bad:'Mixed disposal of broken glass injures the next person who handles the bin.'},
+  {num:21,type:'move',icon:'⚙️',title:'Equipment You Do Not Recognise',khmer:'ឧបករណ៍មិនស្គាល់',scenario:'You are asked to use a commercial food processor you have never operated before. What do you do?',options:['Try it — you can figure it out.','Ask a chef or senior colleague to show you before you operate it.','Read the label on the machine.'],correct:'B',good:'Ask before operating unfamiliar equipment. Equipment injuries are the most common kitchen accidents. Move on.',bad:'Guessing with commercial kitchen equipment is dangerous. Labels may not cover safe operation clearly enough.'},
+  {num:22,type:'ladder',icon:'✅',ladderTo:24,title:'Safety Check Before Leaving',khmer:'ពិនិត្យសុវត្ថិភាព',scenario:'Your shift ends. What do you check before leaving the kitchen?',options:['Clock out and go — the next shift will check.','Confirm burners are off, ovens are off, knives are stored correctly, and alert the incoming team to anything that needs attention.','Check only your own station.'],correct:'B',good:'A complete kitchen close-check protects the building, the next team, and everyone in it. LADDER — advance to Square 24.',bad:'Your own station only is incomplete. The incoming team cannot monitor what they were not told about.',jumpText:'🔥 LADDER! Complete safety check → advance to Square 24'},
+  {num:23,type:'move',icon:'🤝',title:'Kitchen Hierarchy — Your Place',khmer:'ឋានានុក្រមផ្ទះបាយ',scenario:'As a new kitchen student at Mith Samlanh, what is your most important attitude in the first month?',options:['Show the team what you already know.','Watch more than you speak. Ask before you act. Do every task given — including the most basic — with full attention.','Work independently as much as possible.'],correct:'B',good:'The kitchen hierarchy exists for safety and quality. Respect it and learn from it. Move on.',bad:'Demonstrating existing knowledge before building relationships creates friction. Independence before trust is misplaced in a professional kitchen.'},
+  {num:24,type:'ladder',icon:'🏆',ladderTo:0,title:'K1 Complete — Safety is Your Foundation',khmer:'សុវត្ថិភាពជាមូលដ្ឋាន',scenario:'Your head chef asks: "Why do kitchen safety rules exist?" What is the best answer?',options:['Because health inspectors require them.','Because a kitchen is a high-risk environment and every rule exists because someone was hurt before it was written.','To protect the restaurant from lawsuits.'],correct:'B',good:'Every safety rule is written in someone\'s accident. Understanding this makes you take them seriously. K1 COMPLETE! 🔪',bad:'Inspectors and liability are secondary reasons. The human reason is the real one.',jumpText:'🔪 K1 COMPLETE! Kitchen Board 2 — Cambodian Cuisine Fundamentals unlocked'}
+];
+let currentSquare=1,completedSquares=new Set(),correctAnswers=0,laddersClimbed=0,answered=false,selectedOption=null,pendingJump=null;
+function buildBoard(){const grid=document.getElementById('boardGrid');grid.innerHTML='';const rows=[];for(let r=0;r<4;r++){const rs=[];for(let c=0;c<6;c++)rs.push(r*6+c+1);if(r%2===1)rs.reverse();rows.push(rs);}for(let r=rows.length-1;r>=0;r--){for(let c=0;c<rows[r].length;c++){const num=rows[r][c];const sq=SQUARES[num-1];const el=document.createElement('div');el.className=`sq ${sq.type}-sq`;el.id=`sq-${num}`;if(num===currentSquare)el.classList.add('current');if(completedSquares.has(num))el.classList.add('completed');if(num>currentSquare&&!completedSquares.has(num))el.classList.add('locked');el.innerHTML=`<span class="sq-num">${num}</span><span class="sq-icon">${sq.icon}</span><span class="sq-badge">${sq.type==='ladder'?'⬆':sq.type==='snake'?'⬇':''}</span>`;el.onclick=()=>openSquare(num);grid.appendChild(el);}}}
+function updateProgress(){const pct=(completedSquares.size/24)*100;document.getElementById('progressFill').style.width=pct+'%';document.getElementById('progressLabel').textContent=`${completedSquares.size} of 24`;}
+function openSquare(num){if(num!==currentSquare&&!completedSquares.has(num))return;const sq=SQUARES[num-1];answered=false;selectedOption=null;pendingJump=null;const metaEl=document.getElementById('cardMeta');const badgeEl=document.getElementById('cardTypeBadge');const mi=document.getElementById('cardMetaIcon');if(sq.type==='ladder'){metaEl.className='card-meta ladder';mi.textContent='🔥 ';badgeEl.className='card-type-badge badge-ladder';badgeEl.textContent='LADDER SQUARE';}else if(sq.type==='snake'){metaEl.className='card-meta snake';mi.textContent='🔴 ';badgeEl.className='card-type-badge badge-snake';badgeEl.textContent='SNAKE SQUARE';}else{metaEl.className='card-meta move';mi.textContent='⬜ ';badgeEl.className='card-type-badge badge-move';badgeEl.textContent='MOVE ON';}document.getElementById('cardTitle').textContent=`${sq.icon}  ${sq.title}`;document.getElementById('cardKhmer').textContent=sq.khmer;document.getElementById('cardProgressNote').textContent=`Square ${num} of 24  ·  Kitchen Board 1 of 5`;document.getElementById('cardScenario').textContent=sq.scenario;const optionsEl=document.getElementById('cardOptions');optionsEl.innerHTML='';['A','B','C'].forEach((letter,i)=>{const btn=document.createElement('button');btn.className='option-btn';btn.id=`opt-${letter}`;btn.innerHTML=`<span class="option-letter">${letter}</span><span class="option-text">${sq.options[i]}</span>`;if(completedSquares.has(num)){btn.disabled=true;if(letter===sq.correct)btn.classList.add('reveal-correct');}else btn.onclick=()=>selectOption(letter,num);optionsEl.appendChild(btn);});document.getElementById('cardConsequence').className='consequence';document.getElementById('jumpNotice').className='jump-notice';document.getElementById('proTip').className='pro-tip';const btn=document.getElementById('actionBtn');if(completedSquares.has(num)){btn.textContent='✓ Already completed';btn.className='action-btn primary';btn.disabled=true;btn.style.opacity='0.5';}else{btn.textContent='Choose your answer';btn.className='action-btn primary';btn.disabled=false;btn.style.opacity='1';}document.getElementById('cardOverlay').classList.add('open');}
+function selectOption(letter,sqNum){if(answered)return;selectedOption=letter;['A','B','C'].forEach(l=>{const b=document.getElementById(`opt-${l}`);if(b)b.classList.remove('selected-correct','selected-wrong');});const sq=SQUARES[sqNum-1];const btn=document.getElementById(`opt-${letter}`);if(btn)btn.classList.add(letter===sq.correct?'selected-correct':'selected-wrong');document.getElementById('actionBtn').textContent='Confirm answer →';}
+function handleAction(){const sq=SQUARES[currentSquare-1];if(!answered){if(!selectedOption)return;answered=true;const correct=selectedOption===sq.correct;if(correct)correctAnswers++;['A','B','C'].forEach(l=>{const btn=document.getElementById(`opt-${l}`);if(!btn)return;btn.disabled=true;if(l===sq.correct)btn.classList.add('reveal-correct');else btn.classList.remove('selected-wrong');});const conseq=document.getElementById('cardConsequence');conseq.className=correct?'consequence good show':'consequence bad show';conseq.innerHTML=`<span>${correct?'✅':'❌'}</span> ${correct?sq.good:sq.bad}`;if(sq.tip){document.getElementById('proTip').className='pro-tip show';document.getElementById('proTipText').textContent=sq.tip;}if(correct&&sq.ladderTo){pendingJump={type:'ladder',to:sq.ladderTo};laddersClimbed++;const n=document.getElementById('jumpNotice');n.className='jump-notice ladder show';n.textContent=sq.jumpText||`🔥 LADDER! → Square ${sq.ladderTo}`;document.getElementById('actionBtn').textContent=`Advance → Square ${sq.ladderTo}`;document.getElementById('actionBtn').className='action-btn success';}else if(!correct&&sq.snakeTo){pendingJump={type:'snake',to:sq.snakeTo};const n=document.getElementById('jumpNotice');n.className='jump-notice snake show';n.textContent=sq.jumpText||`🔴 SNAKE! → Square ${sq.snakeTo}`;document.getElementById('actionBtn').textContent=`Slide back → Square ${sq.snakeTo}`;document.getElementById('actionBtn').className='action-btn danger';}else{document.getElementById('actionBtn').textContent=correct?'Move on →':'Understood → Move on';document.getElementById('actionBtn').className=correct?'action-btn success':'action-btn primary';}}else{completedSquares.add(currentSquare);let next=currentSquare+1;if(pendingJump)next=pendingJump.to;closeCard();if(currentSquare===24){setTimeout(showCompletion,400);return;}currentSquare=Math.min(next,24);buildBoard();updateProgress();setTimeout(()=>{const el=document.getElementById(`sq-${currentSquare}`);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},300);}}
+function closeCard(){document.getElementById('cardOverlay').classList.remove('open');}
+function handleOverlayClick(e){if(e.target===document.getElementById('cardOverlay'))closeCard();}
+function showCompletion(){document.getElementById('statCorrect').textContent=correctAnswers;document.getElementById('statLadders').textContent=laddersClimbed;document.getElementById('completionScreen').classList.add('show');}
+function restartGame(){currentSquare=1;completedSquares=new Set();correctAnswers=0;laddersClimbed=0;answered=false;selectedOption=null;pendingJump=null;document.getElementById('completionScreen').classList.remove('show');buildBoard();updateProgress();}
+buildBoard();updateProgress();setTimeout(()=>openSquare(1),800);
+</script>
+<link rel="manifest" href="/vocational-boards/manifest.json">
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function() {
+    navigator.serviceWorker.register("/vocational-boards/sw.js")
+      .then(function() { console.log("Offline ready"); })
+      .catch(function(e) { console.log("SW error", e); });
+  });
+}
+</script>
+</body>
+</html>
